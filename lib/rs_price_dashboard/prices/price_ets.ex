@@ -13,7 +13,7 @@ defmodule RsPriceDashboard.PriceEts do
 
   def get_stored_item_prices do
     :ets.tab2list(:item_prices)
-    |> Map.new(fn {item_id, price} -> {item_id, price} end)
+    |> Map.new()
   end
 
   def get_item_price(item_id) do
