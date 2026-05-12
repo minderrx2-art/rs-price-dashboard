@@ -1,7 +1,7 @@
 defmodule RsPriceDashboard.PriceFetcher do
   @url "https://prices.runescape.wiki/api/v1/osrs/latest"
   @headers [{"User-Agent", "minderrx2@gmail.com Elixir price project"}]
-  @fetch_interval :timer.minutes(5)
+  @fetch_interval :timer.minutes(2)
 
   use GenServer
   require Logger
@@ -48,7 +48,7 @@ defmodule RsPriceDashboard.PriceFetcher do
     changed_prices = RsPriceDashboard.PriceEts.get_stored_item_prices() |> RsPriceDashboard.PriceAnalyzer.get_changed(prices)
     with {:ok, :saved} <- RsPriceDashboard.PriceEts.save_item_prices(changed_prices),
          {:ok, _} <- RsPriceDashboard.Prices.upsert_prices(changed_prices) do
-      :ok
+      Enum.each(changed_prices, &RsPriceDashboard.PriceProcess.update_or_start/1)
     else
       {:error, reason} -> Logger.error("DB upsert failed: #{inspect(reason)}")
     end

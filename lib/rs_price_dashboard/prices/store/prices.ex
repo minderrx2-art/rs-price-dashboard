@@ -1,6 +1,6 @@
 defmodule RsPriceDashboard.Prices do
   alias RsPriceDashboard.Repo
-  alias RsPriceDashboard.PriceStore.ItemRecord
+  alias RsPriceDashboard.PriceStore.Price
 
   def upsert_prices(prices) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
@@ -11,7 +11,7 @@ defmodule RsPriceDashboard.Prices do
         inserted_at: now, updated_at: now}
     end)
     case Repo.insert_all(
-      ItemRecord,
+      Price,
       records,
       on_conflict: {:replace, [:high, :low, :high_time, :low_time, :updated_at]},
       conflict_target: :item_id
