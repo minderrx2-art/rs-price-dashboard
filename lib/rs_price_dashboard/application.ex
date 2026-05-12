@@ -12,8 +12,10 @@ defmodule RsPriceDashboard.Application do
       RsPriceDashboard.Repo,
       {DNSCluster, query: Application.get_env(:rs_price_dashboard, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: RsPriceDashboard.PubSub},
-      {RsPriceDashboard.PriceFetcher, []},
+      {Registry, keys: :unique, name: RsPriceDashboard.PriceRegistry},
+      {DynamicSupervisor, name: RsPriceDashboard.PriceSupervisor},
       {RsPriceDashboard.PriceEts, []},
+      {RsPriceDashboard.PriceFetcher, []},
       RsPriceDashboardWeb.Endpoint
     ]
 
